@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Note from '@/models/note';
+import Note from '@/models/Note';
 import { getModule } from 'vuex-module-decorators';
 import Notes from '@/store/modules/notes-module';
 import ThumbNote from '../components/ThumbNote.vue';
