@@ -1,32 +1,40 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+  <div id="app" class="container">
+    <b-navbar>
+      <template slot="brand">
+        <b-navbar-item href="/">
+          <img
+            src="/favicon.ico"
+            alt="Lightweight UI components for Vue.js based on Bulma"
+          />
+        </b-navbar-item>
+      </template>
+      <template slot="start">
+        <b-navbar-item href="/">
+          Home
+        </b-navbar-item>
+        <b-navbar-item tag="div">
+          <div class="buttons">
+            <a class="button is-primary" @click="login">
+              <strong>Log in</strong>
+            </a>
+          </div>
+        </b-navbar-item>
+      </template>
+    </b-navbar>
     <router-view />
   </div>
 </template>
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import googleService from '@/google-service.ts'
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+@Component({})
+export default class App extends Vue {
+  
+  login() {
+    googleService.signIn()
   }
 }
-</style>
+</script>
+<style lang="scss"></style>

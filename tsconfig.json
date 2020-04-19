@@ -13,7 +13,10 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "jest"
+      "jest",
+      "gapi",
+      "gapi.auth2",
+      "gapi.client.drive"
     ],
     "paths": {
       "@/*": [

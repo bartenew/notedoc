@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "src/**/*.ts",
+      "options": {
+        "parser": "typescript"
+      }
+    },
+    {
+      "files": "src/**/*.scss",
+      "options": {
+        "singleQuote": false,
+        "semi": true
+      }
+    }
+  ]
+}
