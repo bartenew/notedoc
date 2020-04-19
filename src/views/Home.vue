@@ -30,9 +30,6 @@ const notesState = getModule(Notes);
   components: { ThumbNote, NoteAdd, NoteSearch },
 })
 export default class Home extends Vue {
-  public created() {
-    notesState.fetchNotes();
-  }
 
   get notes(): Note[] {
     return notesState.filteredNotes;
