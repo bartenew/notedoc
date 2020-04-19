@@ -38,7 +38,7 @@ export class GoogleService {
         'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
       ];
       const CLIENT_ID =
-        '454534668790-dgea5s131b0oerrc4dlhpi295etehr72.apps.googleusercontent.com';
+        '454534668790-rmi302ml2jc19uc08nngnb2ohntk92hm.apps.googleusercontent.com';
       const SCOPES = [
         'https://www.googleapis.com/auth/drive.appdata',
         'https://www.googleapis.com/auth/drive.file',
