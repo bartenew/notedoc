@@ -1,14 +1,14 @@
 <template>
-  <b-field>
-    <b-input
+  <md-field>
+    <md-input
       placeholder="Search..."
       type="search"
       icon="magnify"
       v-model="search"
       icon-clickable
     >
-    </b-input>
-  </b-field>
+    </md-input>
+  </md-field>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,7 @@ import Notes from '@/store/modules/notes-module';
 const notesState = getModule(Notes);
 
 @Component
-export default class NoteAdd extends Vue {
+export default class SearchNote extends Vue {
   private search = '';
 
   @Watch('search')

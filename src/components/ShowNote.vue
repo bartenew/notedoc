@@ -1,16 +1,23 @@
 <template>
-  <div>
-    <header>
-      <p class="modal-card-title">{{ createdDate }}</p>
-    </header>
-    <section v-html="body"></section>
-    <footer>
+  <div class="md-layout">
+    <div class="md-layout-item">
+      <md-field>
+        <md-textarea class="editor" v-model="note.body" />
+      </md-field>
+      <md-button class="md-primary md-raised save">Save</md-button>
+    </div>
+    <div class="md-layout-item md-size-5"></div>
+    <div class="md-layout-item">
       <router-link to="/">
-        <button class="button" type="button">
-          Close
-        </button>
+        <md-icon class="close md-size-1x">
+          close
+        </md-icon>
       </router-link>
-    </footer>
+      <div>
+        <span class="modal-card-title">{{ createdDate }}</span>
+      </div>
+      <section v-html="body"></section>
+    </div>
   </div>
 </template>
 
@@ -31,13 +38,12 @@ export default class ShowNote extends Vue {
     const note = notesState.notes.filter(
       note => note.id === this.$route.params.id,
     )[0];
-    console.log(note);
     return note;
   }
 
   get body() {
     const options = {
-      attributes: { icons: 'font' },
+      attributes: { icons: 'font', showtitle: true },
     };
     return asciiConverter.convert(this.note.body, options);
   }
@@ -52,5 +58,18 @@ export default class ShowNote extends Vue {
 <style scoped lang="scss">
 div {
   @import url('https://raw.githubusercontent.com/darshandsoni/asciidoctor-skins/gh-pages/css/material-red.css');
+}
+.editor {
+  width: 100%;
+  height: 300px;
+}
+textarea {
+  resize: vertical;
+}
+.close {
+  float: right;
+}
+.save {
+  float: right;
 }
 </style>

@@ -15,7 +15,7 @@ export default class Notes extends VuexModule {
   }
 
   @Mutation
-  private deleteNote(deletedNote: Note) {
+  deleteNote(deletedNote: Note) {
     googleService.deleteNote(deletedNote)?.then(resp => {
       if (resp.status == 204) {
         this.notes = this.notes.filter(note => note.id != deletedNote.id)
@@ -47,9 +47,8 @@ export default class Notes extends VuexModule {
       createdAt: new Date(),
     };
 
-    googleService.syncNote(newNote).then(syncedNote => {
-      this.context.commit('addNote', syncedNote)
-    })
+    this.context.commit('addNote', newNote)
+    googleService.syncNote(newNote)
   }
 
   @Action({ commit: 'setFilter' })

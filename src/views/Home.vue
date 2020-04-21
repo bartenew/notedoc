@@ -2,9 +2,10 @@
   <div class="home">
     <NoteAdd />
     <div class="section">
-      <NoteSearch />
+      <SearchNote />
     </div>
-    <div class="rows is-multiline">
+    <md-divider></md-divider>
+    <div>
       <ThumbNote
         class="column is-full"
         :note="note"
@@ -22,20 +23,17 @@ import { getModule } from 'vuex-module-decorators';
 import Notes from '@/store/modules/notes-module';
 import ThumbNote from '../components/ThumbNote.vue';
 import NoteAdd from '../components/NoteAdd.vue';
-import NoteSearch from '../components/NoteSearch.vue';
+import SearchNote from '../components/SearchNote.vue';
 
 const notesState = getModule(Notes);
 
 @Component({
-  components: { ThumbNote, NoteAdd, NoteSearch },
+  components: { ThumbNote, NoteAdd, SearchNote },
 })
 export default class Home extends Vue {
-
   get notes(): Note[] {
     return notesState.filteredNotes;
   }
 }
 </script>
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

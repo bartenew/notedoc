@@ -1,19 +1,20 @@
-<template>
-  <section>
-    <div class="note">
-    <button @click="deleteNote">Delete</button>
-
+<template >
+  <md-card md-with-hover class="note">
+    <md-card-area class="note-body">
       <div class="note-date">
-        <b-tag> {{ createdDate }} </b-tag>
+        <span> {{ createdDate }} </span>
       </div>
-      <div class="note-body" @click="openNote()">
-        <p>
-          {{ note.body }}
-        </p>
-      </div>
-
-    </div>
-  </section>
+      <md-card-content>
+        <div @click="edit">
+          {{ body }}
+        </div>
+      </md-card-content>
+    </md-card-area>
+    <md-card-actions class="note-actions">
+      <md-button @click="edit">Edit</md-button>
+      <md-button @click="remove">Delete</md-button>
+    </md-card-actions>
+  </md-card>
 </template>
 
 <script lang="ts">
@@ -35,35 +36,38 @@ export default class ThumbNote extends Vue {
     return this.note.createdAt.toLocaleString();
   }
 
-  deleteNote() {
-    notesState.context.commit('deleteNote', this.note);
+  get body(): string {
+    return this.note.body.slice(0, 300) + '...';
   }
 
-  openNote() {
+  remove() {
+    notesState.deleteNote(this.note);
+  }
+
+  edit() {
     this.$router.push({ path: `view/${this.note.id}` });
   }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.note {
-  box-shadow: 10px 10px 5px grey;
-  border-radius: 5px;
-
-  max-height: 15em;
-  overflow: hidden;
-}
 .note-body {
-  padding: 3em;
-  cursor: pointer;
+  height: 200px;
 }
-.note-date {
-  float: right;
-}
-
-.delete-btn {
-  float: right;
+.note {
+  vertical-align: top;
+  width: 400px;
+  height: 250px;
+  margin: 20px;
+  display: inline-block;
+  word-wrap: break-word;
   cursor: pointer;
+  @import url('https://raw.githubusercontent.com/darshandsoni/asciidoctor-skins/gh-pages/css/material-red.css');
+}
+.note-actions {
+  position: absolute;
+  bottom: 0;
 }
 </style>

@@ -1,18 +1,13 @@
 <template>
-    <form @submit="onSubmit">
-      <b-field label="Note">
-        <b-input v-model="body" rows="10" type="textarea"></b-input>
-      </b-field>
+    <div @keydown.enter.alt.exact="save" @keydown.meta.enter.exact="save">
+      <md-field label="Note">
+        <md-textarea v-model="body" rows="10"></md-textarea>
+      </md-field>
       <div class="columns">
       <span class="column is-one-third" />
-      <b-button class="is-large"
-        type="is-primary column is-one-third"
-        tag="input"
-        native-type="submit"
-        value="Save"
-      />
+      <md-button class="md-primary md-raised" @click="save">Save</md-button>
     </div>
-    </form>
+    </div>
     
 </template>
 
@@ -28,8 +23,7 @@ export default class NoteAdd extends Vue {
   private body = '';
   private tags: string[] = [];
 
-  private onSubmit(e: Event) {
-    e.preventDefault();
+  private save() {
     notesState.newNote(this.body, this.tags);
   }
 }

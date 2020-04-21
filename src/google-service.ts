@@ -2,7 +2,9 @@ import Note from './models/Note';
 import NoteFormat from './models/NoteFormat';
 import { getModule } from 'vuex-module-decorators';
 import Notes from '@/store/modules/notes-module';
+import UserState from '@/store/modules/user-module';
 
+const userState = getModule(UserState);
 const notesState = getModule(Notes);
 
 declare global {
@@ -12,6 +14,15 @@ declare global {
 }
 export class GoogleService {
   gapi: any;
+  private DISCOVERY_DOCS = [
+    'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+  ];
+  private CLIENT_ID =
+    '454534668790-mbbh75m09a1cta477m87mbplbv6n4unm.apps.googleusercontent.com';
+  private SCOPES = [
+    'https://www.googleapis.com/auth/drive.appdata',
+    'https://www.googleapis.com/auth/drive.file',
+  ];
   constructor() {
     this.loadGapi();
   }
@@ -27,33 +38,26 @@ export class GoogleService {
         };
       }
     });
-
-    // https://github.com/google/google-api-javascript-client/blob/master/samples/loadedDiscovery.html
+    // once gapi is loaded, initialize auth
     await new Promise(resolve => {
       gapi.load('client:auth2', resolve);
     });
 
     try {
-      const DISCOVERY_DOCS = [
-        'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
-      ];
-      const CLIENT_ID =
-        '454534668790-rmi302ml2jc19uc08nngnb2ohntk92hm.apps.googleusercontent.com';
-      const SCOPES = [
-        'https://www.googleapis.com/auth/drive.appdata',
-        'https://www.googleapis.com/auth/drive.file',
-      ];
       await gapi.client.init({
-        discoveryDocs: DISCOVERY_DOCS,
-        clientId: CLIENT_ID,
-        scope: SCOPES.join(' '),
+        discoveryDocs: this.DISCOVERY_DOCS,
+        clientId: this.CLIENT_ID,
+        scope: this.SCOPES.join(' '),
       });
     } catch (googleErr) {
       const err = Error(googleErr.details);
       throw err;
     }
     this.gapi = gapi;
-    this.syncNotesFromDrive();
+    this.isSignedIn().then(val => {
+      userState.updateSignIn(val);
+      val && this.syncNotesFromDrive();
+    });
   }
 
   getAuthClient(): gapi.auth2.GoogleAuth {
@@ -68,6 +72,7 @@ export class GoogleService {
     const auth2 = this.getAuthClient();
     await auth2.signIn();
     const token = auth2.currentUser.get().getAuthResponse(true).id_token;
+    userState.updateSignIn(true);
     this.syncNotesFromDrive();
     return token;
   }
@@ -75,6 +80,7 @@ export class GoogleService {
   async signOut(): Promise<void> {
     const auth2 = this.getAuthClient();
     if (auth2) await auth2.signOut();
+    userState.updateSignIn(false);
   }
 
   async isSignedIn(): Promise<boolean> {
@@ -158,9 +164,8 @@ export class GoogleService {
   }
 
   deleteNote(note: Note) {
-    
     if (note.driveFileId) {
-      return this.getDriveClient().delete({ fileId: note.driveFileId })
+      return this.getDriveClient().delete({ fileId: note.driveFileId });
     }
   }
 }
