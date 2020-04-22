@@ -9,11 +9,18 @@ import 'vue-material/dist/theme/default.css';
 Vue.use(VueMaterial);
 Vue.config.productionTip = false;
 
-new Vue({
-  beforeCreate() {
-    //this.$store.commit('initStore');
-  },
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app');
+// wait for gapi to load
+new Promise(resolve => {
+  if (window.gapi) {
+    resolve(window.gapi);
+  }
+}).then(() => {
+  new Vue({
+    beforeCreate() {
+      //this.$store.commit('initStore');
+    },
+    router,
+    store,
+    render: h => h(App),
+  }).$mount('#app');
+});

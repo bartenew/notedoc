@@ -1,13 +1,11 @@
-<template >
+<template>
   <md-card md-with-hover class="note">
-    <md-card-area class="note-body">
+    <md-card-area class="note-body" @click.native="edit">
       <div class="note-date">
         <span> {{ createdDate }} </span>
       </div>
       <md-card-content>
-        <div @click="edit">
-          {{ body }}
-        </div>
+        {{ body }}
       </md-card-content>
     </md-card-area>
     <md-card-actions class="note-actions">
@@ -47,7 +45,6 @@ export default class ThumbNote extends Vue {
   edit() {
     this.$router.push({ path: `view/${this.note.id}` });
   }
-
 }
 </script>
 

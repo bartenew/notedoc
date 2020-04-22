@@ -26,23 +26,11 @@ export class GoogleService {
   constructor() {
     this.loadGapi();
   }
-  //https://github.com/bosancz/bosan.cz/blob/2356157ed2fa30c2d253cc439dd314361a428b67/client-admin/src/
   async loadGapi() {
-    // wait for the GAPI <script> to be loaded
-    const gapi: any = await new Promise(resolve => {
-      if (window.gapi) {
-        resolve(window.gapi);
-      } else {
-        window.gapiLoaded = function() {
-          resolve(window.gapi);
-        };
-      }
-    });
-    // once gapi is loaded, initialize auth
+    this.gapi = window.gapi;
     await new Promise(resolve => {
-      gapi.load('client:auth2', resolve);
+      this.gapi.load('client:auth2', resolve);
     });
-
     try {
       await gapi.client.init({
         discoveryDocs: this.DISCOVERY_DOCS,
@@ -53,7 +41,6 @@ export class GoogleService {
       const err = Error(googleErr.details);
       throw err;
     }
-    this.gapi = gapi;
     this.isSignedIn().then(val => {
       userState.updateSignIn(val);
       val && this.syncNotesFromDrive();
@@ -106,7 +93,7 @@ export class GoogleService {
           resource: metadata,
         })
       ).result.id;
-      note.driveFileId = fileId;
+      note.driveFileId = fileId || '';
       await this.updateNote(note);
     }
     return note;
@@ -137,14 +124,14 @@ export class GoogleService {
           const notes: Note[] = [];
 
           files
-            .filter(file => file.fileExtension == 'adoc')
+            .filter(file => file.fileExtension == 'adoc' && file.name)
             .forEach(async file => {
+              const id = file.name?.split('.adoc')[0] || '';
               const note: Note = {
-                body: await this.getNoteContent(file.id),
-                createdAt: new Date(),
-                tags: [],
-                id: file.id + '',
+                id: id,
                 driveFileId: file.id,
+                body: await this.getNoteContent(file.id),
+                createdAt: new Date(Date.parse(file.createdTime || '0')),
                 format: NoteFormat.ASCIIDOC,
               };
               notesState.addNote(note);
