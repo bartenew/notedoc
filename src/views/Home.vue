@@ -6,11 +6,12 @@
     </div>
     <md-divider></md-divider>
     <div>
+      <md-progress-bar md-mode="query" v-if="!notesState.isDriveSynced"></md-progress-bar>
       <ThumbNote
         class="column is-full"
         :note="note"
-        v-for="note in notes"
-        :key="note.id"
+        v-for="(note, idx) in notesState.filteredNotes"
+        :key="idx"
       />
     </div>
   </div>
@@ -18,22 +19,18 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Note from '@/models/Note';
 import { getModule } from 'vuex-module-decorators';
 import Notes from '@/store/modules/notes-module';
 import ThumbNote from '../components/ThumbNote.vue';
 import NoteAdd from '../components/NoteAdd.vue';
 import SearchNote from '../components/SearchNote.vue';
 
-const notesState = getModule(Notes);
 
 @Component({
   components: { ThumbNote, NoteAdd, SearchNote },
 })
 export default class Home extends Vue {
-  get notes(): Note[] {
-    return notesState.filteredNotes;
-  }
+  private notesState: Notes = getModule(Notes);
 }
 </script>
 <style scoped lang="scss"></style>

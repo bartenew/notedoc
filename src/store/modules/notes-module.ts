@@ -2,74 +2,86 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Note from '@/models/Note';
 import Store from '../store';
 import NoteFormat from '@/models/NoteFormat';
-import googleService from '@/google-service.ts'
+import googleService from '@/google-service.ts';
+import uuid from '../utils';
 
-function uuid() {
-  let u='',i=0;
-  while(i++<36) {
-      const c='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'[i-1],r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);
-      u+=(c=='-'||c=='4')?c:v.toString(16)
-  }
-  return u;
-}
+const ADD_NOTE = 'ADD_NOTE';
+const UPDATE_NOTE = 'UPDATE_NOTE';
+const SET_FILTER = 'SET_FILTER';
+const DELETE_NOTE = 'DELETE_NOTE';
+const SET_DRIVE_SYNCED = 'SET_DRIVE_SYNCED';
 
-
-@Module({ name: "notes-state", store: Store, dynamic: true, namespaced: true })
+@Module({ name: 'notes-state', store: Store, dynamic: true, namespaced: true })
 export default class Notes extends VuexModule {
   notes: Note[] = [];
   filter = '';
+  isDriveSynced = false;
 
   get filteredNotes() {
-    return this.notes.filter(n => n.body.includes(this.filter))
-  }
-
-  @Action
-  async deleteNote(deletedNote: Note) {
-    googleService.deleteNote(deletedNote)?.then(resp => {
-      if (resp.status == 204) {
-        this.notes = this.notes.filter(note => note.id != deletedNote.id)
-      }
-    })
-    
+    return this.notes.filter(n => n.body.includes(this.filter));
   }
 
   @Mutation
-  addNote(note: Note) {
+  [SET_DRIVE_SYNCED](status: boolean) {
+    this.isDriveSynced = status;
+  }
+
+  @Mutation
+  [ADD_NOTE](note: Note) {
     this.notes.push(note);
   }
 
   @Mutation
-  updateNote(updatedNote: Note) {
-    const foundNote = this.notes.filter(n => n.id == updatedNote.id)[0]
+  [UPDATE_NOTE](updatedNote: Note) {
+    const foundNote = this.notes.find(n => n.id == updatedNote.id);
     if (foundNote) {
       foundNote.body = updatedNote.body;
       foundNote.driveFileId = updatedNote.driveFileId;
+      foundNote.isSynced = updatedNote.isSynced;
     }
   }
 
   @Mutation
-  private setFilter(filter: string) {
-    this.filter = filter
+  [SET_FILTER](filter: string) {
+    this.filter = filter;
+  }
+
+  @Mutation
+  [DELETE_NOTE](deletedNote: Note) {
+    this.notes.splice(this.notes.indexOf(deletedNote), 1);
   }
 
   @Action
-  newNote(body: string, tags: Array<string>) {
-    const format =
-       NoteFormat.ASCIIDOC;
-    
-    const newNote: Note = {
-      id: uuid(),
-      body: body,
-      format: format,
-      tags: tags,
-      createdAt: new Date(),
-    };
-
-    this.context.commit('addNote', newNote)
-    googleService.syncNote(newNote).then(driveNote => this.updateNote(driveNote));
+  deleteNote(deletedNote: Note) {
+    googleService.deleteNote(deletedNote)?.then(resp => {
+      if (resp.status == 204) {
+        this.context.commit(DELETE_NOTE, deletedNote);
+      }
+    });
   }
 
-  @Action({ commit: 'setFilter' })
+  @Action
+  updateNote(updatedNote: Note) {
+    updatedNote.isSynced = false;
+    this.context.commit(UPDATE_NOTE, updatedNote);
+    googleService
+      .syncNote(updatedNote)
+      .then(driveSyncedNote => this.context.commit(UPDATE_NOTE, driveSyncedNote));
+  }
+
+  @Action
+  addNote(body: string, tags: Array<string>) {
+    const format = NoteFormat.ASCIIDOC;
+
+    const newNote = new Note(uuid(), body, format, new Date());
+
+    this.context.commit(ADD_NOTE, newNote);
+    googleService
+      .syncNote(newNote)
+      .then(driveNote => this.context.commit(UPDATE_NOTE, driveNote));
+  }
+
+  @Action({ commit: SET_FILTER })
   applySearch(searchInput: string) {
     return searchInput;
   }

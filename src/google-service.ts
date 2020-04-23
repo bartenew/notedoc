@@ -9,7 +9,7 @@ const notesState = getModule(Notes);
 
 declare global {
   interface Window {
-    gapiLoaded: any;
+    gapiLoaded: Function;
   }
 }
 export class GoogleService {
@@ -82,6 +82,7 @@ export class GoogleService {
   async syncNote(note: Note) {
     if (note.driveFileId) {
       await this.updateNote(note);
+      note.isSynced = true;
     } else {
       const metadata = {
         name: note.id + '.adoc',
@@ -94,6 +95,7 @@ export class GoogleService {
         })
       ).result.id;
       note.driveFileId = fileId || '';
+      note.isSynced = true;
       await this.updateNote(note);
     }
     return note;
@@ -127,15 +129,18 @@ export class GoogleService {
             .filter(file => file.fileExtension == 'adoc' && file.name)
             .forEach(async file => {
               const id = file.name?.split('.adoc')[0] || '';
-              const note: Note = {
-                id: id,
-                driveFileId: file.id,
-                body: await this.getNoteContent(file.id),
-                createdAt: new Date(Date.parse(file.createdTime || '0')),
-                format: NoteFormat.ASCIIDOC,
-              };
-              notesState.addNote(note);
+              const note = new Note(
+                id,
+                await this.getNoteContent(file.id),
+                NoteFormat.ASCIIDOC,
+                new Date(Date.parse(file.createdTime || '0')),
+              );
+              note.driveFileId = file.id;
+              note.isSynced = true;
+              // TODO add action instead of mutation call?
+              notesState.ADD_NOTE(note);
             });
+          notesState.SET_DRIVE_SYNCED(true);
           resolve(notes);
         });
     });

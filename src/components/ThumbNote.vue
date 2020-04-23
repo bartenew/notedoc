@@ -3,6 +3,7 @@
     <md-card-area class="note-body" @click.native="edit">
       <div class="note-date">
         <span> {{ createdDate }} </span>
+        <md-progress-spinner v-if="!note.isSynced" md-mode="indeterminate"></md-progress-spinner>
       </div>
       <md-card-content>
         {{ body }}
