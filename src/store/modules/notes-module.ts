@@ -79,7 +79,7 @@ export default class Notes extends VuexModule {
 
   @Action
   resetState() {
-    this.context.commit(RESET_STATE);
+    this.context.commit(RESET_STATE, {});
   }
   @Action
   resetEditor() { // how to do spread operator???
