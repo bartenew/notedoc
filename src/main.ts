@@ -4,11 +4,11 @@ import router from './router';
 import store from './store/store';
 import VueMaterial from 'vue-material';
 import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default.css';
+import 'vue-material/dist/theme/black-green-light.css';
 import 'prismjs';
 import 'prismjs/components/prism-asciidoc.min.js';
 import 'vue-prism-editor/dist/VuePrismEditor.css';
-import 'prismjs/themes/prism-twilight.css';
+import 'prismjs/themes/prism-solarizedlight.css';
 
 Vue.use(VueMaterial);
 Vue.config.productionTip = false;

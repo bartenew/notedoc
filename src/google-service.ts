@@ -1,5 +1,4 @@
 import Note from './models/Note';
-import NoteFormat from './models/NoteFormat';
 import { getModule } from 'vuex-module-decorators';
 import Notes from '@/store/modules/notes-module';
 import UserState from '@/store/modules/user-module';
@@ -13,7 +12,9 @@ declare global {
   }
 }
 export class GoogleService {
+  // eslint-disable-next-line
   gapi: any;
+
   private DISCOVERY_DOCS = [
     'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
   ];
@@ -68,6 +69,7 @@ export class GoogleService {
     const auth2 = this.getAuthClient();
     if (auth2) await auth2.signOut();
     userState.updateSignIn(false);
+    notesState.resetState();
   }
 
   async isSignedIn(): Promise<boolean> {
@@ -132,13 +134,12 @@ export class GoogleService {
               const note = new Note(
                 id,
                 await this.getNoteContent(file.id),
-                NoteFormat.ASCIIDOC,
                 new Date(Date.parse(file.createdTime || '0')),
               );
               note.driveFileId = file.id;
               note.isSynced = true;
               // TODO add action instead of mutation call?
-              notesState.ADD_NOTE(note);
+              notesState.SAVE_NOTE(note);
             });
           notesState.SET_DRIVE_SYNCED(true);
           resolve(notes);
