@@ -9,11 +9,12 @@ const notesState = getModule(Notes);
 declare global {
   interface Window {
     gapiLoaded: Function;
+    gapi: any;
   }
 }
 export class GoogleService {
   // eslint-disable-next-line
-  gapi: any;
+  private gapi: any;
 
   private DISCOVERY_DOCS = [
     'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
@@ -26,34 +27,6 @@ export class GoogleService {
   ];
   constructor() {
     this.loadGapi();
-  }
-  async loadGapi() {
-    this.gapi = window.gapi;
-    await new Promise(resolve => {
-      this.gapi.load('client:auth2', resolve);
-    });
-    try {
-      await gapi.client.init({
-        discoveryDocs: this.DISCOVERY_DOCS,
-        clientId: this.CLIENT_ID,
-        scope: this.SCOPES.join(' '),
-      });
-    } catch (googleErr) {
-      const err = Error(googleErr.details);
-      throw err;
-    }
-    this.isSignedIn().then(val => {
-      userState.updateSignIn(val);
-      val && this.syncNotesFromDrive();
-    });
-  }
-
-  getAuthClient(): gapi.auth2.GoogleAuth {
-    return this.gapi.auth2.getAuthInstance();
-  }
-
-  getDriveClient(): gapi.client.drive.FilesResource {
-    return this.gapi.client.drive.files;
   }
 
   async signIn(): Promise<string> {
@@ -77,7 +50,7 @@ export class GoogleService {
     return auth2 ? await auth2.isSignedIn.get() : false;
   }
 
-  async syncNote(note: Note) {
+  async syncNote(note: Note): Promise<Note> {
     if (note.driveFileId) {
       await this.updateNote(note);
       note.isSynced = true;
@@ -99,17 +72,6 @@ export class GoogleService {
     return note;
   }
 
-  private updateNote(note: Note) {
-    return this.gapi.client.request({
-      path: '/upload/drive/v3/files/' + note.driveFileId,
-      method: 'PATCH',
-      params: {
-        uploadType: 'media',
-      },
-      body: note.body,
-    });
-  }
-
   syncNotesFromDrive(): Promise<Note[]> {
     return new Promise<Note[]>(resolve => {
       this.getDriveClient()
@@ -124,13 +86,13 @@ export class GoogleService {
           const notes: Note[] = [];
 
           files
-            .filter(file => file.fileExtension == 'adoc' && file.name)
+            .filter(file => file.fileExtension == 'adoc')
             .forEach(async file => {
-              const id = file.name?.split('.adoc')[0] || '';
+              const id = file.name?.split('.adoc')[0];
               const note = new Note(
-                id,
+                id!,
                 await this.getNoteContent(file.id),
-                new Date(Date.parse(file.createdTime || '0')),
+                new Date(Date.parse(file.createdTime!)),
               );
               note.driveFileId = file.id;
               note.isSynced = true;
@@ -142,7 +104,14 @@ export class GoogleService {
         });
     });
   }
-  async getNoteContent(driveId?: string): Promise<string> {
+
+  deleteNote(note: Note) {
+    if (note.driveFileId) {
+      return this.getDriveClient().delete({ fileId: note.driveFileId });
+    }
+  }
+
+  private async getNoteContent(driveId?: string): Promise<string> {
     if (!driveId) return '';
     return (
       await this.getDriveClient().get({
@@ -152,10 +121,43 @@ export class GoogleService {
     ).body;
   }
 
-  deleteNote(note: Note) {
-    if (note.driveFileId) {
-      return this.getDriveClient().delete({ fileId: note.driveFileId });
+  private updateNote(note: Note) {
+    return this.gapi.client.request({
+      path: '/upload/drive/v3/files/' + note.driveFileId,
+      method: 'PATCH',
+      params: {
+        uploadType: 'media',
+      },
+      body: note.body,
+    });
+  }
+  private async loadGapi() {
+    this.gapi = window.gapi;
+    await new Promise(resolve => {
+      this.gapi.load('client:auth2', resolve);
+    });
+    try {
+      await gapi.client.init({
+        discoveryDocs: this.DISCOVERY_DOCS,
+        clientId: this.CLIENT_ID,
+        scope: this.SCOPES.join(' '),
+      });
+    } catch (googleErr) {
+      const err = Error(googleErr.details);
+      throw err;
     }
+    this.isSignedIn().then(val => {
+      userState.updateSignIn(val);
+      val && this.syncNotesFromDrive();
+    });
+  }
+
+  private getAuthClient(): gapi.auth2.GoogleAuth {
+    return this.gapi.auth2.getAuthInstance();
+  }
+
+  private getDriveClient(): gapi.client.drive.FilesResource {
+    return this.gapi.client.drive.files;
   }
 }
 const googleService = new GoogleService();
