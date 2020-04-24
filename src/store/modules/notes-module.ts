@@ -2,7 +2,7 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
 import Note from '@/models/Note';
 import Store from '../store';
 import googleService from '@/google-service.ts';
-import uuid from '../utils';
+import { uuid, DEFAULT_NOTE_BODY } from '@/store/utils';
 
 const RESET_STATE = 'RESET_STATE';
 const SAVE_NOTE = 'SAVE_NOTE';
@@ -10,30 +10,26 @@ const DELETE_NOTE = 'DELETE_NOTE';
 const SET_DRIVE_SYNCED = 'SET_DRIVE_SYNCED';
 const UPDATE_IN_EDIT_NOTE = 'UPDATE_IN_EDIT_NOTE';
 
-const DEFAULT_BODY = `Hello, AsciiDoc!
-~~~~~~~~~~~~~~~~
-- Take notes
-- Save to Google Drive
-- Preview rendered notes in Edit`;
+
 
 @Module({ name: 'notes-state', store: Store, dynamic: true, namespaced: true })
 export default class Notes extends VuexModule {
   notes: Note[] = [];
   filter = '';
   isDriveSynced = false;
-  inEditNote: Note = new Note(uuid(), DEFAULT_BODY, new Date());
+  inEditNote: Note = new Note(uuid(), DEFAULT_NOTE_BODY, new Date());
 
   @Mutation
   // eslint-disable-next-line
   [RESET_STATE](payload: any) {
-    this.inEditNote = new Note(uuid(), DEFAULT_BODY, new Date());
-    if(payload.editorOnly) {
+    this.inEditNote = new Note(uuid(), DEFAULT_NOTE_BODY, new Date());
+    if (payload.editorOnly) {
       return;
     }
     this.notes = [];
     this.filter = '';
     this.isDriveSynced = false;
-    this.inEditNote = new Note(uuid(), DEFAULT_BODY, new Date());
+    this.inEditNote = new Note(uuid(), DEFAULT_NOTE_BODY, new Date());
   }
 
   @Mutation
@@ -72,26 +68,30 @@ export default class Notes extends VuexModule {
     await googleService.deleteNote(deletedNote);
   }
 
-  @Action
+  @Action({ commit: UPDATE_IN_EDIT_NOTE })
   updateEditor(note: Note) {
-    this.context.commit(UPDATE_IN_EDIT_NOTE, note);
+    return note;
   }
 
-  @Action
+  @Action({ commit: RESET_STATE })
   resetState() {
-    this.context.commit(RESET_STATE, {});
+    return {};
   }
-  @Action
-  resetEditor() { // how to do spread operator???
-    this.context.commit(RESET_STATE, { editorOnly: true })
+  @Action({ commit: RESET_STATE })
+  resetEditor() {
+    // how to do spread operator???
+    return { editorOnly: true };
   }
 
-  @Action
-  saveNote(note: Note) {
+  @Action({ commit: SET_DRIVE_SYNCED })
+  setDriveSynced(status: boolean) {
+    return status;
+  }
+
+  @Action({ commit: SAVE_NOTE })
+  async saveNote(note: Note) {
     note.isSynced = false;
     this.context.commit(SAVE_NOTE, note);
-    googleService
-      .syncNote(note)
-      .then(driveSyncedNote => this.context.commit(SAVE_NOTE, driveSyncedNote));
+    return await googleService.syncNote(note);
   }
 }

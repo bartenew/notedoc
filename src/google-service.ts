@@ -77,10 +77,6 @@ export class GoogleService {
     return auth2 ? await auth2.isSignedIn.get() : false;
   }
 
-  syncAllNotes(notes: Note[]) {
-    notes.forEach(this.syncNote);
-  }
-
   async syncNote(note: Note) {
     if (note.driveFileId) {
       await this.updateNote(note);
@@ -141,7 +137,7 @@ export class GoogleService {
               // TODO add action instead of mutation call?
               notesState.SAVE_NOTE(note);
             });
-          notesState.SET_DRIVE_SYNCED(true);
+          notesState.setDriveSynced(true);
           resolve(notes);
         });
     });
