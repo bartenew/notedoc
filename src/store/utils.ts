@@ -15,7 +15,7 @@ const DEFAULT_NOTE_BODY = `Hello, AsciiDoc!
 - Save to Google Drive
 - Preview rendered notes in Edit
   
-image::https://cf.ltkcdn.net/dogs/images/std/65325-371x324-Great_dane.jpg[200,200]
+image::https://images.pexels.com/photos/374898/pexels-photo-374898.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=200[200,200]
   `;
 export {
   uuid,
