@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators';
 import Store from '../store';
 
 const UPDATE_SIGN_IN = 'UPDATE_SIGN_IN';
@@ -10,7 +10,7 @@ const UPDATE_SIGN_IN = 'UPDATE_SIGN_IN';
   namespaced: true,
 })
 export default class UserState extends VuexModule {
-  isSignedIn = false
+  isSignedIn = false;
 
   @Mutation
   [UPDATE_SIGN_IN](isSignedIn: boolean) {

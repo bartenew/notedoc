@@ -1,15 +1,14 @@
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators';
 import Note from '@/models/Note';
 import Store from '../store';
 import googleService from '@/google-service.ts';
-import { uuid, DEFAULT_NOTE_BODY } from '@/store/utils';
+import { DEFAULT_NOTE_BODY, uuid } from '@/store/utils';
 
 const RESET_STATE = 'RESET_STATE';
 const SAVE_NOTE = 'SAVE_NOTE';
 const DELETE_NOTE = 'DELETE_NOTE';
 const SET_DRIVE_SYNCED = 'SET_DRIVE_SYNCED';
 const UPDATE_IN_EDIT_NOTE = 'UPDATE_IN_EDIT_NOTE';
-
 
 
 @Module({ name: 'notes-state', store: Store, dynamic: true, namespaced: true })
@@ -77,6 +76,7 @@ export default class Notes extends VuexModule {
   resetState() {
     return {};
   }
+
   @Action({ commit: RESET_STATE })
   resetEditor() {
     // how to do spread operator???

@@ -12,6 +12,7 @@ declare global {
     gapi: any;
   }
 }
+
 export class GoogleService {
   // eslint-disable-next-line
   private gapi: any;
@@ -25,6 +26,7 @@ export class GoogleService {
     'https://www.googleapis.com/auth/drive.appdata',
     'https://www.googleapis.com/auth/drive.file',
   ];
+
   constructor() {
     this.loadGapi();
   }
@@ -131,6 +133,7 @@ export class GoogleService {
       body: note.body,
     });
   }
+
   private async loadGapi() {
     this.gapi = window.gapi;
     await new Promise(resolve => {
@@ -160,6 +163,7 @@ export class GoogleService {
     return this.gapi.client.drive.files;
   }
 }
+
 const googleService = new GoogleService();
 
 export default googleService;

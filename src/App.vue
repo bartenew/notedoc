@@ -9,11 +9,13 @@
       </router-link>
 
       <span class="md-display-1">NoteDoc</span>
-            <md-button class="md-accent md-raised" @click="resetEditor"
-        >New Editor</md-button
+      <md-button class="md-accent md-raised" @click="resetEditor"
+      >New Editor
+      </md-button
       >
       <md-button class="md-accent md-raised" @click="saveNote"
-        >Save to Drive</md-button
+      >Save to Drive
+      </md-button
       >
 
       <div class="md-toolbar-section-end">
@@ -26,55 +28,56 @@
       </div>
     </md-app-toolbar>
     <md-app-content>
-      <router-view />
+      <router-view/>
     </md-app-content>
   </md-app>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import googleService from '@/google-service.ts';
-import { getModule } from 'vuex-module-decorators';
-import UserState from '@/store/modules/user-module';
-import Notes from './store/modules/notes-module';
+  import { Component, Vue } from 'vue-property-decorator';
+  import googleService from '@/google-service.ts';
+  import { getModule } from 'vuex-module-decorators';
+  import UserState from '@/store/modules/user-module';
+  import Notes from './store/modules/notes-module';
 
-const userState = getModule(UserState);
-const notesState = getModule(Notes);
+  const userState = getModule(UserState);
+  const notesState = getModule(Notes);
 
-@Component({})
-export default class App extends Vue {
-  get isSignedIn(): boolean {
-    return userState.isSignedIn;
-  }
-
-  resetEditor() {
-    notesState.resetEditor();
-  }
-
-  saveNote() {
-    if (!this.isSignedIn) {
-      this.signIn();
+  @Component({})
+  export default class App extends Vue {
+    get isSignedIn(): boolean {
+      return userState.isSignedIn;
     }
-    notesState.saveNote(notesState.inEditNote);
-  }
 
-  signIn() {
-    googleService.signIn();
-  }
+    resetEditor() {
+      notesState.resetEditor();
+    }
 
-  signOut() {
-    googleService.signOut();
+    saveNote() {
+      if (!this.isSignedIn) {
+        this.signIn();
+      }
+      notesState.saveNote(notesState.inEditNote);
+    }
+
+    signIn() {
+      googleService.signIn();
+    }
+
+    signOut() {
+      googleService.signOut();
+    }
   }
-}
 </script>
 <style lang="scss">
-.language-adoc {
-  white-space: pre-wrap !important; /* css-3 */
-  white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-  white-space: -pre-wrap !important; /* Opera 4-6 */
-  white-space: -o-pre-wrap !important; /* Opera 7 */
-  word-wrap: break-word !important; /* Internet Explorer 5.5+ */
-}
-#app {
-  height: 100vh;
-}
+  .language-adoc {
+    white-space: pre-wrap !important; /* css-3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -pre-wrap !important; /* Opera 4-6 */
+    white-space: -o-pre-wrap !important; /* Opera 7 */
+    word-wrap: break-word !important; /* Internet Explorer 5.5+ */
+  }
+
+  #app {
+    height: 100vh;
+  }
 </style>

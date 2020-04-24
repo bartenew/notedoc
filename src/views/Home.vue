@@ -13,7 +13,7 @@
       />
     </div>
     <md-divider></md-divider>
-    <AddNote class="md-size-90" />
+    <AddNote class="md-size-90"/>
     <div class="section">
       <!-- <SearchNote /> -->
     </div>
@@ -21,19 +21,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { getModule } from 'vuex-module-decorators';
-import Notes from '@/store/modules/notes-module';
-import ThumbNote from '../components/ThumbNote.vue';
-import AddNote from '../components/AddNote.vue';
-import UserState from '../store/modules/user-module';
+  import { Component, Vue } from 'vue-property-decorator';
+  import { getModule } from 'vuex-module-decorators';
+  import Notes from '@/store/modules/notes-module';
+  import ThumbNote from '../components/ThumbNote.vue';
+  import AddNote from '../components/AddNote.vue';
+  import UserState from '../store/modules/user-module';
 
-@Component({
-  components: { ThumbNote, AddNote },
-})
-export default class Home extends Vue {
-  private notesState: Notes = getModule(Notes);
-  private userState: UserState = getModule(UserState);
-}
+  @Component({
+    components: { ThumbNote, AddNote },
+  })
+  export default class Home extends Vue {
+    private notesState: Notes = getModule(Notes);
+    private userState: UserState = getModule(UserState);
+  }
 </script>
 <style scoped lang="scss"></style>
