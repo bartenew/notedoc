@@ -2,8 +2,7 @@ Note[doc]
 ~~~~~~~~~
 
 [.lead]
-Live editor of asciidoc. Allows saving notes to your Google Drive.
-
+Live editor of asciidoc. Allows saving notes to your Google Drive. https://notedoc.bartenew.me
 
 Project setup
 ~~~~~~~~~~~~~
