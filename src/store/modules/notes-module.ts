@@ -2,7 +2,8 @@ import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators';
 import Note from '@/models/Note';
 import Store from '../store';
 import googleService from '@/google-service.ts';
-import { DEFAULT_NOTE_BODY, uuid } from '@/store/utils';
+import { uuid } from '@/store/utils';
+import { DEFAULT_NOTE_BODY } from '@/store/default-note';
 
 const RESET_STATE = 'RESET_STATE';
 const SAVE_NOTE = 'SAVE_NOTE';
