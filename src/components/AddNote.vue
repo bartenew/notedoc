@@ -1,15 +1,12 @@
 <template>
-  <div
-    @keydown.enter.alt.exact="save"
-    @keydown.meta.enter.exact="save"
-    class="md-layout"
-  >
+  <div class="md-layout">
 
     <div @scroll.capture="scrollEditor" class="md-layout-item md-size-45 md-small-size-100">
       <prism-editor class="editor" language="adoc" v-model="note.body"></prism-editor>
     </div>
     <div class="md-layout-item md-size-5"></div>
     <AsciiDocPreview
+      @scroll.native="scrollPreview"
       :body="note.body"
       class="md-layout-item md-size-45 md-small-size-100 preview"
     />
