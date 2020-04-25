@@ -33,7 +33,13 @@ Normal paragraph
 Curabitur est ipsum, iaculis in lectus vel, pulvinar sollicitudin sem. Suspendisse cursus arcu massa, vel posuere felis feugiat nec.
 Morbi tincidunt diam sed arcu consectetur, ut facilisis leo rutrum.
 
-_italic_ *bold* ~subscript~`
+_italic_ *bold* ~subscript~
+
+Preserve linebreaks
+[%hardbreaks]
+1
+2
+3`
 ;
 export {
   uuid,

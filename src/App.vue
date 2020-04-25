@@ -54,13 +54,13 @@
 
     saveNote() {
       if (!this.isSignedIn) {
-        this.signIn();
+        this.signIn().then(() => notesState.saveNote(notesState.inEditNote));
       }
       notesState.saveNote(notesState.inEditNote);
     }
 
-    signIn() {
-      googleService.signIn();
+    signIn(): Promise<string> {
+      return googleService.signIn();
     }
 
     signOut() {
