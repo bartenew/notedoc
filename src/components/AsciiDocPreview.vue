@@ -1,5 +1,5 @@
 <template>
-  <div v-html="renderedBody"></div>
+  <div class="adoc--preview" v-html="renderedBody"></div>
 </template>
 
 <script lang="ts">
@@ -22,8 +22,11 @@
   }
 </script>
 
-<style lang="scss">
-  .lead {
-    font-size: 1.21875em; line-height: 1.6 !important;
+<style scoped>
+  .adoc--preview >>> .lead {
+    font-size: 1.21875em;
+    line-height: 1.6 !important;
   }
+
+  @import '../../public/asciidoctor-default.css';
 </style>
