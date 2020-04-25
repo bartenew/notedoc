@@ -1,6 +1,6 @@
 <template>
   <md-app id="app" md-mode="fixed">
-    <md-app-toolbar class="md-primary">
+    <md-app-toolbar class="md-primary md-layout">
       <router-link to="/">
         <img
           src="/favicon.ico"
@@ -8,21 +8,20 @@
         />
       </router-link>
 
-      <span class="md-display-1">NoteDoc</span>
-      <md-button class="md-accent md-raised" @click="resetEditor"
-      >New Editor
-      </md-button
-      >
-      <md-button class="md-accent md-raised" @click="saveNote"
-      >Save to Drive
-      </md-button
-      >
-
-      <div class="md-toolbar-section-end">
-        <md-button v-if="!isSignedIn" @click="signIn">
+      <span class="md-display-1">Note[doc]</span>
+      <div class="toolbar--buttons md-layout-item md-small-size-95">
+        <md-button class="blue md-raised" @click="resetEditor">
+          New Editor
+        </md-button>
+        <md-button class="blue md-raised" @click="saveNote">
+          Save to Drive
+        </md-button>
+      </div>
+      <div class="md-toolbar-section-end md-layout-item md-small-size-5">
+        <md-button class="login--button" v-if="!isSignedIn" @click="signIn">
           <strong>Sign in</strong>
         </md-button>
-        <md-button v-else @click="signOut">
+        <md-button class="login--button" v-else @click="signOut">
           <strong>Sign Out</strong>
         </md-button>
       </div>
@@ -79,5 +78,16 @@
 
   #app {
     height: 100vh;
+  }
+
+  .toolbar--buttons button {
+    background-color: #5e70ca !important;
+    color: #ffffff !important;
+  }
+
+  .toolbar--buttons {
+    @media screen and (min-width: 64em) {
+      margin-left: 8px;
+    }
   }
 </style>
