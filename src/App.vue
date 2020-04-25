@@ -4,6 +4,7 @@
       <router-link to="/">
         <img
           src="/favicon.ico"
+          id="icon"
           alt="Lightweight UI components for Vue.js based on Bulma"
         />
       </router-link>
@@ -89,5 +90,8 @@
     @media screen and (min-width: 64em) {
       margin-left: 8px;
     }
+  }
+  #icon {
+    border-radius: 3px;
   }
 </style>
