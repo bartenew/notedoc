@@ -1,5 +1,5 @@
 <template>
-  <md-content class="md-scrollbar" v-html="renderedBody"></md-content>
+  <div v-html="renderedBody"></div>
 </template>
 
 <script lang="ts">
@@ -22,4 +22,8 @@
   }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+  .lead {
+    font-size: 1.21875em; line-height: 1.6 !important;
+  }
+</style>
