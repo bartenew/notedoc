@@ -25,11 +25,10 @@
 </script>
 
 <style lang="scss">
-  .adoc--preview >>> .lead {
+  .lead {
     font-size: 1.21875em;
     line-height: 1.6 !important;
   }
-
   .adoc--preview.adoc-foundation {
     @import '../../public/adoc-themes/adoc-foundation';
   }

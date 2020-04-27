@@ -103,6 +103,10 @@
     word-wrap: break-word !important; /* Internet Explorer 5.5+ */
   }
 
+  .md-toolbar {
+    font-family: sans-serif;
+  }
+
   #app {
     height: 100vh;
   }
