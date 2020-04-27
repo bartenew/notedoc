@@ -7,6 +7,7 @@
     <div class="md-layout-item md-size-5"></div>
     <AsciiDocPreview
       @scroll.native="scrollPreview"
+      :theme="adocTheme"
       :body="note.body"
       class="md-layout-item md-size-45 md-small-size-100 preview"
     />
@@ -33,6 +34,10 @@
 
     get note() {
       return notesState.inEditNote;
+    }
+
+    get adocTheme() {
+      return notesState.adocTheme;
     }
 
     get editor(): Element {

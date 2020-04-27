@@ -19,6 +19,13 @@
         </md-button>
       </div>
       <div class="md-toolbar-section-end md-layout-item md-small-size-5">
+        <div class="md-small-hide">
+          <md-field class="themes--selector">
+            <select v-model="adocTheme" @change="changeTheme">
+              <option :value="theme" :key="idx" v-for="(theme, idx) in themeOptions">{{ theme }}</option>
+            </select>
+          </md-field>
+        </div>
         <md-button class="login--button" v-if="!isSignedIn" @click="signIn">
           <strong>Sign in</strong>
         </md-button>
@@ -44,8 +51,27 @@
 
   @Component({})
   export default class App extends Vue {
+
+    private adocTheme = 'asciidoctor';
+
     get isSignedIn(): boolean {
       return userState.isSignedIn;
+    }
+
+    get themeOptions() {
+      return [
+        'asciidoctor',
+        'adoc-foundation',
+        'gazette',
+        'ubuntu',
+        'notebook',
+      ];
+
+
+    }
+
+    changeTheme() {
+      notesState.changeAdocTheme(this.adocTheme);
     }
 
     resetEditor() {
@@ -91,6 +117,7 @@
       margin-left: 8px;
     }
   }
+
   #icon {
     border-radius: 3px;
   }
