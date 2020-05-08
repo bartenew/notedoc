@@ -1,15 +1,16 @@
 <template>
   <div class="md-layout">
 
-    <div @scroll.capture="scrollEditor" class="md-layout-item md-size-45 md-small-size-100">
+    <div @scroll.capture="syncScroll" class="md-layout-item md-size-45 md-small-size-100 editor--wrapper">
       <prism-editor class="editor" language="adoc" v-model="note.body"></prism-editor>
     </div>
     <div class="md-layout-item md-size-5"></div>
+
     <AsciiDocPreview
-      @scroll.native="scrollPreview"
+      @scroll.native="syncScroll"
       :theme="adocTheme"
       :body="note.body"
-      class="md-layout-item md-size-45 md-small-size-100 preview"
+      class="md-layout-item md-size-50 md-small-size-100 preview"
     />
   </div>
 </template>
@@ -30,8 +31,6 @@
     },
   })
   export default class AddNote extends Vue {
-    private tags: string[] = [];
-
     get note() {
       return notesState.inEditNote;
     }
@@ -48,14 +47,15 @@
       return this.$el.querySelector('.preview')!;
     }
 
-    scrollEditor(e: Event) {
+    syncScroll(e: Event) {
       const source = e.srcElement as Element;
-      this.preview.scrollTop = source.scrollTop;
-    }
-
-    scrollPreview(e: Event) {
-      const source = e.srcElement as Element;
-      this.editor.scrollTop = source.scrollTop;
+      console.log(source.classList)
+      const scrollPct = Number((source.scrollTop / source.scrollHeight).toFixed(2));
+      if (source.classList.contains("editor")) {
+        this.preview.scrollTop = this.preview.scrollHeight * scrollPct;
+      } else {
+        this.editor.scrollTop = this.editor.scrollHeight * scrollPct;
+      }
     }
   }
 </script>
@@ -64,7 +64,6 @@
   .editor {
     height: 90vh;
   }
-
   .preview {
     height: 90vh;
     overflow: auto;
