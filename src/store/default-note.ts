@@ -6,7 +6,7 @@ const DEFAULT_NOTE_BODY = `Hello, AsciiDoc!
 
 TIP: There are five admonition labels: Tip, Note, Important, Caution and Warning.
 
-image::https://nodejsera.com/library/assets/img/pug-logo.png[200,200]
+image::https://cdn.pixabay.com/photo/2016/02/19/11/53/pug-1210025_960_720.jpg[300,200]
 
 Icons icon:github[] icon:google[] icon:youtube[] icon:chrome[]
 
