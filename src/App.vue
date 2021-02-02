@@ -1,6 +1,6 @@
 <template>
   <md-app id="app" md-mode="fixed">
-    <md-app-toolbar class="md-primary md-layout">
+    <md-app-toolbar class="md-layout">
       <router-link to="/">
         <img
           src="/favicon.ico"
@@ -10,13 +10,13 @@
       </router-link>
 
       <span class="md-display-1">Note[doc]</span>
-      <div class="toolbar--buttons md-layout-item md-small-size-95">
-        <md-button class="blue md-raised" @click="resetEditor">
+      <div>
+        <button class="nes-btn is-primary" @click="resetEditor">
           New Editor
-        </md-button>
-        <md-button class="blue md-raised" @click="saveNote">
+        </button>
+        <button class="nes-btn" @click="saveNote">
           Save to Drive
-        </md-button>
+        </button>
       </div>
       <div class="md-toolbar-section-end md-layout-item md-small-size-5">
         <div class="md-small-hide">
@@ -95,6 +95,8 @@
   }
 </script>
 <style lang="scss">
+  @import "../node_modules/nes.css/css/nes.min.css";
+
   .language-adoc {
     white-space: pre-wrap !important; /* css-3 */
     white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
